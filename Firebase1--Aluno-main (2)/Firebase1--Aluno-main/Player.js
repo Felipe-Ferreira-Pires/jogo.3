@@ -1,7 +1,7 @@
 class Player {
  constructor (x ,y) {
   this.player = createSprite (x,y,20,20);
-  //this.player.shapeColor = color (192,192,192);
+  this.player.shapeColor = color (61,46,34);
   
  }
 
