@@ -7,6 +7,10 @@ var tempo
 var segundos
 var vidas = 10
 var nivel = 1
+var tempo_transicao = 0
+var transicao = false
+const DURACAO_TRANSICAO = 2000;
+
 function setup() {
  createCanvas (windowWidth,windowHeight);
  jogador=new Player ();
@@ -20,11 +24,21 @@ function setup() {
  tempo=millis ();
  mouseX=width/2
  mouseY=width/2
+ 
+ 
 }
 
 
 function draw() {
- background (0,164,232);
+ 
+if (transicao) {
+    fill(0,150);
+    rect(0,0,width,height);}
+    if (millis() - tempo_transicao>= DURACAO_TRANSICAO) {
+        transicao=false;
+        passar_nivel ()
+    } else {
+        background (0,164,232);
  jogador.andar ();
  drawSprites ();
 
@@ -54,12 +68,11 @@ segundos=Math.floor ((millis()-tempo)/1000); //flor = arredondar valores [para o
 fill ("Black");
 text ("Tempo :" + segundos, 100,100);
 passar_nivel ()
-
+    }
 }
 
-function chamar_nivel () {
-    passar_nivel ();
-}
+
+
 
 function windowResized () {
     resizeCanvas (windowWidth,windowHeight);
@@ -87,6 +100,8 @@ function chamar_inimigos () {
 
 function Nivel_2 () {
  inimigos= [];
+ jogador.x=770
+ jogador.y=323
  paredes.push(new Nivel_1(300,0,50,1100)); 
  paredes.push(new Nivel_1(390,660,60,1168));
  paredes.push(new Nivel_1(215,660,60,1168));
@@ -94,20 +109,25 @@ function Nivel_2 () {
  paredes.push(new Nivel_1(575,660,60,1168));
  paredes.push(new Nivel_1(670,0,50,1100));
  paredes.push(new Nivel_1(765,660,60,1168));
+
 }
 function Nivel_3 () {
-alert ("Chegou !")
+ 
 }
 
 
 function passar_nivel () {
-    if (segundos>1) {
+    if (segundos>15 && nivel==1) {
+        transicao=true
         Nivel_2 ();
-       } else if (jogador.x<=100 && jogador.y>=300) {
-        alert ("Teste")
+        if (mouseX<=100 && mouseY>=300) {
+            alert ("Teste")
+            nivel=2
+        }
+       } else if (nivel==2) {
         Nivel_3 ();
-
        }
+       
     }
 
 function nivel () {
