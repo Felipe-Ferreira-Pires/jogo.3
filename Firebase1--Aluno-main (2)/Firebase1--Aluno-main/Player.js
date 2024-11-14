@@ -1,18 +1,18 @@
 class Player {
- constructor (x ,y) {
-  this.player = createSprite (x,y,20,20);
+ constructor () {
+  this.player = createSprite (width/2,500,20,20);
   this.player.shapeColor = color (61,46,34);
   
  }
 
  mostrar () {
 
-    drawSprites ();
-    
+  drawSprites ()
+  
  }
 
  andar () {
-    if (keyDown("w")){
+    /*if (keyDown("w")){
       this.player.y-=7
     }
     if (keyDown("s")){
@@ -23,6 +23,9 @@ class Player {
     }
     if (keyDown("d")){
       this.player.x+=7
-    }
+    }*/
+      this.player.x=mouseX
+      this.player.y=mouseY
+      console.log (mouseY,mouseX)
  }
 }
