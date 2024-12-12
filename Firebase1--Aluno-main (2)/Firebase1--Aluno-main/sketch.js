@@ -8,11 +8,17 @@ var segundos
 var vidas = 10
 var nivel = 1
 var tempo_transicao = 0
+var invisivel = 0
 var aqui
 var sumir
+var saida
+var quadrado
+var aqui2
 var transicao = false
+var rotacao = []
 let gameOverState = false;
 let sumirCriado = false;
+let pegar = false
 const DURACAO_TRANSICAO = 500;
 
 function setup() {
@@ -47,7 +53,9 @@ if (transicao) {
 
         background (0,164,232);
  jogador.andar ();
+
  drawSprites ();
+ 
  if (sumirCriado && jogador.player.isTouching(sumir)) {
     sumir.remove(); // Remove o sprite
     sumirCriado = false; // Atualiza o estado para indicar que sumir foi removido
@@ -55,8 +63,13 @@ if (transicao) {
 
  if (nivel === 2) {
     
- fill ("golden")
+ fill ("black")
  text (" Clique aqui para iniciar o segundo nivel ! ", 1000,300)
+ 
+ if (jogador.player.isTouching (aqui2) && invisivel ===1) {
+    aqui2.visible= true
+    invisivel=2
+}
  }
  
  for (let i = 0; i < inimigos.length; i++) {
@@ -66,6 +79,7 @@ if (transicao) {
     for (let j = 0; j < paredes.length; j++) {
         inimigos[i].inimigo.bounceOff(paredes[j].parede);
     }
+    
 }
 
 for (let i = 0; i < paredes.length; i++) {
@@ -77,21 +91,78 @@ for (let i = 0; i < paredes.length; i++) {
             return; // [retorna ao estado anterior ou seja false]
         }
     }
+    
 }
+
 for (var i = 0; i < inimigos.length; i++) {
     if (jogador.player.isTouching(inimigos[i].inimigo)) {
         jogador.player.remove();
         triggerGameOver(); // em resumo refaz a função [acredito que seja isso]
         return; // [retorna ao estado anterior ou seja false]
     }
+    
 }
+
+
+if (nivel==3) {
+
+    for (var i of rotacao) {
+        
+        i.Velocidade();
+        if (frameCount % 10===0) {
+            var randomColor = color (random (255), random (255), random (255))
+            i.sprite.shapeColor = randomColor 
+            }
+            
+        }
+    for (var i = 0; i < rotacao.length; i++) {
+        if (jogador.player.isTouching(rotacao[i].sprite)) {
+            jogador.player.remove();
+            triggerGameOver(); // em resumo refaz a função [acredito que seja isso]
+            return; // [retorna ao estado anterior ou seja false]
+        }    
+    }
+    if (jogador.player.isTouching (quadrado)) {
+        quadrado.remove ()
+        pegar=true
+        saida=createSprite (width/2 -500, height/2, 50,50)
+        
+      }
+      if (pegar === true && jogador.player.isTouching (saida)) {
+        nivel=4
+        
+    }
+
+
+}
+ if (nivel==4) {
+
+    for (var i of rotacao) {
+
+        i.Velocidade();
+        if (frameCount % 10===0) {
+            var randomColor = color (random (255), random (255), random (255))
+            i.sprite.shapeColor = randomColor 
+            }
+    }
+    for (var i = 0; i < rotacao.length; i++) {
+        if (jogador.player.isTouching(rotacao[i].sprite)) {
+            jogador.player.remove();
+            triggerGameOver(); // em resumo refaz a funcao [acredito que seja isso]
+            return; // [retorna ao estado anterior ou seja false]
+        }    
+    }
+ }
 segundos=Math.floor ((millis()-tempo)/1000); //flor = arredondar valores [para o menor], math = valor matematica
 fill ("Black");
 text ("Tempo :" + segundos, 100,100);
 passar_nivel ()
     }
-    restart ()
+    text ("Nivel :" + nivel , 100,200)
+    
 }
+
+
 function triggerGameOver() {
     gameOverState = true; // Ativa o estado de Game Over
     
@@ -124,7 +195,11 @@ function chamar_inimigos () {
 }
 
 function Nivel_2() {
-    inimigos = [];
+    for (var i = 0; i<inimigos.length; i ++) {
+        inimigos [i].inimigo.remove ()
+      
+        
+        }
     paredes.push(new Nivel_1(300, 0, 50, 1100));
     paredes.push(new Nivel_1(390, 660, 60, 1168));
     paredes.push(new Nivel_1(215, 660, 60, 1168));
@@ -136,68 +211,107 @@ function Nivel_2() {
     paredes.push(new Nivel_1(0, 0, 3000, 100));
     paredes.push(new Nivel_1(1350, 0, 100, 1500));
     paredes.push(new Nivel_1(0, 650, 3000, 100));
-
-    aqui = createSprite(1100, 350, 20, 20);
+    aqui = createSprite(1100, 350, 30, 30);
     aqui.shapeColor = "Black";
-}
+    /*destruir= createSprite (115,350,100,500);
+    destruir.shapeColor = rgb (0,164,232);
+    destruir.lifetime=100
+    if (jogador.player.isTouching(destruir)) {
+      jogador.player.remove ()
+      triggerGameOver ()
+    }*/
+    passar= createSprite (118,550,135,100)
+    passar.visible = false
+    aqui2=createSprite (width/2 -200,height/2 +250, 5,5)
+    aqui2.visible= false
+}   
 
 
 function Nivel_3 () {
- 
+  for (var i = 0; i<paredes.length; i ++) {
+  paredes [i].parede.remove ()
+  
+  
+  }
+  
+  parede=new Nivel_1 (0,0,0,100);
+  paredes.push(new Nivel_1(0,0,100,1500));
+  paredes.push(new Nivel_1(0,0,3000,100));
+  paredes.push(new Nivel_1(1350,0,100,1500));
+  paredes.push(new Nivel_1(0,650,3000,100));
+  passar.remove ()
+  aqui.remove ()
+  aqui2.remove ()
+  rotacao.push(new Rotacao(width/2,height/2,20,600,3))
+  rotacao.push(new Rotacao(width/2,height/2,20,600,4))
+  rotacao.push(new Rotacao(width/2,height/2,20,600,5))
+  
+  quadrado=createSprite (width/2 +500,height/2,20,20)
+
+  
+}
+
+function Nivel_4 () {
+    parede=new Nivel_1 (0,0,0,100);
+    paredes.push(new Nivel_1(0,0,100,1500));
+    paredes.push(new Nivel_1(0,0,3000,100));
+    paredes.push(new Nivel_1(1350,0,100,1500));
+    paredes.push(new Nivel_1(0,650,3000,100));
+    for (var i= 0; i<rotacao.length; i ++) {
+        rotacao [i].sprite.remove ()
+      }
+    saida.remove ()
+    rotacao.push(new Rotacao(width/2,height/2,20,600,3))
+  rotacao.push(new Rotacao(width/2 -200,height/2,20,600,4))
+  rotacao.push(new Rotacao(width/2 - 200,height/2 -300,20,600,5))
 }
 
 function keyPressed() {
-    if (key === 'g' && gameOverState && nivel !== 2) {
-        restartNivelAtual(); // Reinicia o nível atual
+    if (key === 'g' && gameOverState && nivel === 1) {
+        restartNivelAtual(); 
     }
 }
-function mouseClicked() {
+function mouseClicked () {
     if (nivel === 2) {
         if (aqui.overlapPoint (mouseX,mouseY) && gameOverState) {            
-            restartNivelAtual ();
-            
+            restartGame()
+            invisivel = 1
         }
+        if (aqui2.overlapPoint (mouseX,mouseY) && gameOverState) {            
+            restartGame()
+            invisivel = 2
+        }
+        
     }
 }
 function restartGame() {
     vidas = 1;
-    //nivel = 2;
-    jogador = new Player(); // Recria o jogador
-    //inimigos = [];
-    paredes = [];
-    gameOverState = false; // Sai do estado de Game Over
-    //tempo = millis(); // Reinicia o tempo
-    
+    jogador = new Player(); 
+    gameOverState = false; 
 }
 
 function passar_nivel () {
-    if (segundos>5 && nivel==1) {
+    if (segundos>1 && nivel==1) {
         transicao=true
         Nivel_2 ();
         nivel=2
-        
-        /*if (mouseX<1051 && mouseY>320) {
-            transicao=true
-            nivel=2 
-            
-        }*/
-       } else if (nivel==2) {
-
-        Nivel_3 ();
-
-       }
        
+    }else if (nivel==2 && jogador.player.isTouching(passar)) {
+        Nivel_3();
+        nivel=3;
+        
+       }else if (nivel == 3 && jogador.player.isTouching(saida)) {
+        nivel = 4;
+        Nivel_4();
+    
     }
+}
 
     function restartNivelAtual() {
-        // Reiniciar variáveis e estado do nível atual
         vidas = 1;
-        //segundos = 0;
-        jogador = new Player(); // Recria o jogador
-        //inimigos = [];
+        jogador = new Player(); 
         paredes = [];
     
-        // Recarrega os inimigos e paredes do nível atual
         if (nivel === 1) {
             //chamar_inimigos();
             
@@ -211,8 +325,7 @@ function passar_nivel () {
             Nivel_3();
         }
     
-        gameOverState = false; // Sai do estado de Game Over
-        //tempo = millis(); // Reinicia o tempo
+        gameOverState = false; 
     }
-function restart () {
-}
+
+    
