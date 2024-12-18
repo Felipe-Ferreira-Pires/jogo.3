@@ -11,10 +11,10 @@ var tempo_transicao = 0
 var invisivel = 0
 var aqui
 var sumir
-var saida
-var quadrado
+var saida,saida2
 var aqui2
 var transicao = false
+var quadrado2,quadrado
 var rotacao = []
 let gameOverState = false;
 let sumirCriado = false;
@@ -25,7 +25,7 @@ function setup() {
 
  createCanvas (windowWidth,windowHeight);
  jogador=new Player ();
- parede=new Nivel_1 (0,0,0,100);
+ 
  paredes.push(new Nivel_1(0,0,100,1500));
  paredes.push(new Nivel_1(0,0,3000,100));
  paredes.push(new Nivel_1(1350,0,100,1500));
@@ -129,30 +129,37 @@ if (nivel==3) {
         
       }
       if (pegar === true && jogador.player.isTouching (saida)) {
+        saidafoi=true
+        pegar = true
         nivel=4
-        
+        quadrado2=createSprite (width/2 +500,height/2,20,20)
     }
 
 
 }
- if (nivel==4) {
-
-    for (var i of rotacao) {
-
+if (nivel == 4) {
+    for (let i of rotacao) {
         i.Velocidade();
-        if (frameCount % 10===0) {
-            var randomColor = color (random (255), random (255), random (255))
-            i.sprite.shapeColor = randomColor 
-            }
+        if (frameCount % 10 === 0) {
+            let randomColor = color(random(255), random(255), random(255));
+            i.sprite.shapeColor = randomColor;
+        }
     }
-    for (var i = 0; i < rotacao.length; i++) {
-        if (jogador.player.isTouching(rotacao[i].sprite)) {
-            jogador.player.remove();
-            triggerGameOver(); // em resumo refaz a funcao [acredito que seja isso]
-            return; // [retorna ao estado anterior ou seja false]
-        }    
-    }
- }
+
+
+        for (var i = 0; i < rotacao.length; i++) {
+            if (jogador.player.isTouching(rotacao[i].sprite)) {
+                jogador.player.remove();
+                triggerGameOver(); // em resumo refaz a funcao [acredito que seja isso]
+                return; // [retorna ao estado anterior ou seja false]
+            }    
+        }
+        if (jogador.player.isTouching(quadrado2)) {
+    quadrado2.remove();
+    pegar = true;
+    saida2 = createSprite(width / 2 - 500, height / 2, 50, 50);
+}
+}
 segundos=Math.floor ((millis()-tempo)/1000); //flor = arredondar valores [para o menor], math = valor matematica
 fill ("Black");
 text ("Tempo :" + segundos, 100,100);
@@ -228,44 +235,49 @@ function Nivel_2() {
 
 
 function Nivel_3 () {
-  for (var i = 0; i<paredes.length; i ++) {
-  paredes [i].parede.remove ()
-  
-  
-  }
-  
-  parede=new Nivel_1 (0,0,0,100);
-  paredes.push(new Nivel_1(0,0,100,1500));
-  paredes.push(new Nivel_1(0,0,3000,100));
-  paredes.push(new Nivel_1(1350,0,100,1500));
-  paredes.push(new Nivel_1(0,650,3000,100));
-  passar.remove ()
-  aqui.remove ()
-  aqui2.remove ()
-  rotacao.push(new Rotacao(width/2,height/2,20,600,3))
-  rotacao.push(new Rotacao(width/2,height/2,20,600,4))
-  rotacao.push(new Rotacao(width/2,height/2,20,600,5))
-  
-  quadrado=createSprite (width/2 +500,height/2,20,20)
-
-  
-}
+    for (var i = 0; i<paredes.length; i ++) {
+        paredes [i].parede.remove ()
+        
+        
+        }
+        
+        paredes.push(new Nivel_1(0,0,100,1500));
+        paredes.push(new Nivel_1(0,0,3000,100));
+        paredes.push(new Nivel_1(1350,0,100,1500));
+        paredes.push(new Nivel_1(0,650,3000,100)); 
+        passar.remove ()
+        aqui.remove ()
+        aqui2.remove ()
+        rotacao.push(new Rotacao(width/2,height/2,20,600,3))
+        rotacao.push(new Rotacao(width/2,height/2,20,600,4))
+        rotacao.push(new Rotacao(width/2,height/2,20,600,5))
+        
+        quadrado=createSprite (width/2 +500,height/2,20,20)
+     
+      
+        
+      }
 
 function Nivel_4 () {
-    parede=new Nivel_1 (0,0,0,100);
-    paredes.push(new Nivel_1(0,0,100,1500));
-    paredes.push(new Nivel_1(0,0,3000,100));
-    paredes.push(new Nivel_1(1350,0,100,1500));
-    paredes.push(new Nivel_1(0,650,3000,100));
-    for (var i= 0; i<rotacao.length; i ++) {
-        rotacao [i].sprite.remove ()
-      }
-    saida.remove ()
-    rotacao.push(new Rotacao(width/2,height/2,20,600,3))
-  rotacao.push(new Rotacao(width/2 -200,height/2,20,600,4))
-  rotacao.push(new Rotacao(width/2 - 200,height/2 -300,20,600,5))
-}
 
+    for (var i = 0; i<paredes.length; i ++) {
+        paredes [i].parede.remove ()
+        
+        
+        }
+        
+     
+    
+    
+    quadrado.remove ()
+    rotacao.push (new Rotacao (width/2,height/2,20,600,3))
+    rotacao.push (new Rotacao (width/2 -100,height/2,20,600,5))
+    rotacao.push (new Rotacao (width/2 +100, height/2, 20, 600, 4))
+
+}
+function Nivel_5 () {
+    quadrado2.remove ()
+}
 function keyPressed() {
     if (key === 'g' && gameOverState && nivel === 1) {
         restartNivelAtual(); 
@@ -300,8 +312,8 @@ function passar_nivel () {
         Nivel_3();
         nivel=3;
         
-       }else if (nivel == 3 && jogador.player.isTouching(saida)) {
-        nivel = 4;
+       }else if (nivel == 4 && saidafoi===true) {
+        
         Nivel_4();
     
     }
@@ -319,12 +331,7 @@ function passar_nivel () {
             paredes.push(new Nivel_1(0, 0, 3000, 100));
             paredes.push(new Nivel_1(1350, 0, 100, 1500));
             paredes.push(new Nivel_1(0, 650, 3000, 100));
-        } else if (nivel === 2) {
-            Nivel_2();
-        } else if (nivel === 3) {
-            Nivel_3();
         }
-    
         gameOverState = false; 
     }
 
